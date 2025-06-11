@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Digital Signature Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <div class="hero-section">
+      <h1>Digital Signature Tool</h1>
+      <p class="subtitle">Secure cryptographic signing and verification with military-grade encryption</p>
+    </div>
+
+    <!-- Collapsible Instructions -->
+    <div class="instruction-container">
+      <button class="instruction-toggle" id="instructionToggle" aria-expanded="false">
+        <span class="toggle-icon">📖</span>
+        <span class="toggle-text">How to Use This Tool</span>
+        <span class="toggle-arrow">▼</span>
+      </button>
+      
+      <div class="instruction-content" id="instructionContent">
+        <div class="instruction-grid">
+          <div class="instruction-step">
+            <div class="step-icon">🔑</div>
+            <h3>Step 1: Generate Keys</h3>
+            <p>Create a secure RSA-PSS 2048-bit key pair. The public key can be shared safely, but keep your private key secret and secure.</p>
+            <ul>
+              <li>Click "Generate Keys" to create your key pair</li>
+              <li>Download both keys for safekeeping</li>
+              <li>Never share your private key with anyone</li>
+            </ul>
+          </div>
+          
+          <div class="instruction-step">
+            <div class="step-icon">✍️</div>
+            <h3>Step 2: Sign Documents</h3>
+            <p>Use your private key to create digital signatures for documents or text. This proves authenticity and prevents tampering.</p>
+            <ul>
+              <li>Choose text input or file upload</li>
+              <li>Paste or load your private key</li>
+              <li>Click "Create Signature" to generate</li>
+              <li>Download the signature file</li>
+            </ul>
+          </div>
+          
+          <div class="instruction-step">
+            <div class="step-icon">🔍</div>
+            <h3>Step 3: Verify Signatures</h3>
+            <p>Verify the authenticity of signed documents using the public key and signature file.</p>
+            <ul>
+              <li>Upload the original document</li>
+              <li>Upload the public key file</li>
+              <li>Upload the signature file</li>
+              <li>Click "Verify" to check authenticity</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="security-notice">
+          <div class="notice-icon">🔒</div>
+          <div class="notice-content">
+            <h4>Security & Privacy</h4>
+            <p>All operations are performed locally in your browser. Your keys and documents never leave your device, ensuring complete privacy and security.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main functional tabs -->
+    <nav class="tabs" role="tablist" aria-label="Main functionalities">
+      <button class="tab active" id="generateKeyTab" role="tab" aria-selected="true" aria-controls="generateKeyPanel" tabindex="0">
+        <span class="tab-icon">🔑</span>
+        <span class="tab-text">Generate Keys</span>
+      </button>
+      <button class="tab" id="signDocumentTab" role="tab" aria-selected="false" aria-controls="signDocumentPanel" tabindex="-1">
+        <span class="tab-icon">✍️</span>
+        <span class="tab-text">Sign Document</span>
+      </button>
+      <button class="tab" id="verifyDocumentTab" role="tab" aria-selected="false" aria-controls="verifyDocumentPanel" tabindex="-1">
+        <span class="tab-icon">🔍</span>
+        <span class="tab-text">Verify Signature</span>
+      </button>
+    </nav>
+
+    <!-- Generate Key Pair Section -->
+    <section class="card" id="generateKeyPanel" role="tabpanel" aria-labelledby="generateKeyTab">
+      <div class="card-header">
+        <h2>Generate Cryptographic Key Pair</h2>
+        <p class="card-description">Create a secure RSA-PSS 2048-bit key pair for digital signing</p>
+      </div>
+      
+      <div class="card-content">
+        <button id="generateKeysBtn" type="button" class="primary-btn">
+          <span class="btn-icon">🎲</span>
+          <span class="btn-text">Generate New Key Pair</span>
+        </button>
+
+        <div class="key-output-section">
+          <div class="output-group">
+            <div class="label-actions">
+              <label for="publicKeyOutput">Public Key (Share Safely)</label>
+              <div class="action-buttons">
+                <button class="small-btn copy-btn" type="button" data-target="publicKeyOutput">
+                  <span class="btn-icon">📋</span>
+                  Copy
+                </button>
+                <button class="small-btn" id="downloadPublicKeyBtn" type="button">
+                  <span class="btn-icon">💾</span>
+                  Download
+                </button>
+              </div>
+            </div>
+            <textarea id="publicKeyOutput" readonly rows="6" placeholder="Your public key will appear here..."></textarea>
+          </div>
+
+          <div class="output-group">
+            <div class="label-actions">
+              <label for="privateKeyOutput">Private Key (Keep Secret!)</label>
+              <div class="action-buttons">
+                <button class="small-btn copy-btn" type="button" data-target="privateKeyOutput">
+                  <span class="btn-icon">📋</span>
+                  Copy
+                </button>
+                <button class="small-btn" id="downloadPrivateKeyBtn" type="button">
+                  <span class="btn-icon">💾</span>
+                  Download
+                </button>
+              </div>
+            </div>
+            <textarea id="privateKeyOutput" readonly rows="6" placeholder="Your private key will appear here..."></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sign Document Section -->
+    <section class="card" id="signDocumentPanel" role="tabpanel" aria-labelledby="signDocumentTab" hidden>
+      <div class="card-header">
+        <h2>Create Digital Signature</h2>
+        <p class="card-description">Sign your documents or text using your private key</p>
+      </div>
+      
+      <div class="card-content">
+        <nav class="sub-tabs" role="tablist">
+          <button class="sub-tab active" id="sign-text-tab" role="tab" aria-selected="true">
+            <span class="tab-icon">📝</span>
+            Text Input
+          </button>
+          <button class="sub-tab" id="sign-file-tab" role="tab" aria-selected="false">
+            <span class="tab-icon">📁</span>
+            File Upload
+          </button>
+        </nav>
+        
+        <form id="signForm">
+          <div id="sign-text-panel" role="tabpanel">
+            <div class="input-group">
+              <label for="signDocumentInput">Document Text to Sign</label>
+              <textarea id="signDocumentInput" placeholder="Enter your document text here..." rows="6"></textarea>
+            </div>
+          </div>
+          
+          <div id="sign-file-panel" role="tabpanel" hidden>
+            <div class="input-group">
+              <label for="signFileInput">Select File to Sign</label>
+              <div class="file-input-wrapper">
+                <input type="file" id="signFileInput" accept="*"/>
+                <div class="file-input-overlay">
+                  <span class="file-icon">📎</span>
+                  <span class="file-text">Choose file or drag & drop</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <div class="label-actions">
+              <label for="privateKeyInput">Your Private Key</label>
+              <div class="action-buttons">
+                <button class="small-btn copy-btn" type="button" data-target="privateKeyInput">
+                  <span class="btn-icon">📋</span>
+                  Copy
+                </button>
+                <button class="small-btn" id="privateKeyFileBtn" type="button">
+                  <span class="btn-icon">📁</span>
+                  Load File
+                </button>
+              </div>
+            </div>
+            <textarea id="privateKeyInput" placeholder="Paste your private key here..." rows="6"></textarea>
+            <input type="file" id="privateKeyUpload" accept=".pem,.txt" style="display:none;" />
+          </div>
+
+          <button id="signBtn" type="button" class="primary-btn">
+            <span class="btn-icon">🖊️</span>
+            <span class="btn-text">Create Signature</span>
+          </button>
+
+          <div class="output-group">
+            <div class="label-actions">
+              <label for="signatureOutput">Generated Digital Signature</label>
+              <div class="action-buttons">
+                <button class="small-btn copy-btn" type="button" data-target="signatureOutput">
+                  <span class="btn-icon">📋</span>
+                  Copy
+                </button>
+                <button class="small-btn" id="downloadSignatureBtn" type="button">
+                  <span class="btn-icon">💾</span>
+                  Download
+                </button>
+              </div>
+            </div>
+            <textarea id="signatureOutput" readonly rows="4" placeholder="Your digital signature will appear here..."></textarea>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Verify Document Section -->
+    <section class="card" id="verifyDocumentPanel" role="tabpanel" aria-labelledby="verifyDocumentTab" hidden>
+      <div class="card-header">
+        <h2>Verify Digital Signature</h2>
+        <p class="card-description">Upload files to verify document authenticity and integrity</p>
+      </div>
+      
+      <div class="card-content">
+        <form id="verifyForm">
+          <div class="input-group">
+            <label for="verifyFileInput">Original Document File</label>
+            <div class="file-input-wrapper">
+              <input type="file" id="verifyFileInput" accept="*"/>
+              <div class="file-input-overlay">
+                <span class="file-icon">📄</span>
+                <span class="file-text">Choose document file</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="publicKeyUploadInput">Public Key File (.pem, .txt)</label>
+            <div class="file-input-wrapper">
+              <input type="file" id="publicKeyUploadInput" accept=".pem,.txt"/>
+              <div class="file-input-overlay">
+                <span class="file-icon">🔓</span>
+                <span class="file-text">Choose public key file</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="signatureUploadInput">Signature File (.txt)</label>
+            <div class="file-input-wrapper">
+              <input type="file" id="signatureUploadInput" accept=".txt"/>
+              <div class="file-input-overlay">
+                <span class="file-icon">🎯</span>
+                <span class="file-text">Choose signature file</span>
+              </div>
+            </div>
+          </div>
+
+          <button id="verifyBtn" type="button" class="primary-btn">
+            <span class="btn-icon">🔍</span>
+            <span class="btn-text">Verify Signature</span>
+          </button>
+        </form>
+        
+        <div id="verifyResult" role="alert" class="result" style="display:none;"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Notification Container -->
+  <div id="notificationContainer" class="notification-container"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
